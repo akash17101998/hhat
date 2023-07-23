@@ -1,0 +1,70 @@
+This will guide you how to start the hardhat node to deploy the smart contract
+
+1. Command :- 
+yarn add --dev hardhat
+npx hardhat
+2. Use any option but in this I use the typescript project
+
+After this you can see there is some dir. like 
+contract - where we have to put our smart contract
+script - where we have to write the script to deploy the smart contract
+
+
+In package.json add these module
+
+yarn add @nomiclabs/hardhat-ethers
+yarn add @nomiclabs/hardhat-waffl
+yarn add dotenv
+yarn add hardhat
+yarn add hardhat-deploy
+yarn add ts-node
+yarn add typescript
+
+
+After this in hardhat.config.ts add the network and path 
+networks: {
+    local: {
+      url: 'http://127.0.0.1:8448'
+    }
+  },
+  paths: {
+    tests: "./test",
+    cache: "./cache",
+    sources: "./contracts",
+    deploy: "./scripts",
+    artifacts: "./artifacts",
+    deployments: "./deployments",
+}
+
+In script folder file add 
+
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+
+async function main(hre: HardhatRuntimeEnvironment) {
+    const { deployments, getNamedAccounts, getUnnamedAccounts } = hre;
+ 
+    const unnamedAccounts = await getUnnamedAccounts();
+    
+    const deployer = unnamedAccounts[0];
+
+    const evoting = await deployments.deploy('Lock', {   // contract name
+        contract: 'Lock',  // must be contract name
+        from: deployer,
+        args: [1690104506235],   // if any arguments required to deploy the contract
+        log: true,
+        skipIfAlreadyDeployed: true,
+    });
+}
+
+export default main;
+
+Our basic setup is done, now it's time to run the node
+npx hardhat node --port 8448
+
+To deploy the contract
+npx hardhat deploy --network local 
+
+To open the network console 
+npx hardhat console --network local 
+
+
